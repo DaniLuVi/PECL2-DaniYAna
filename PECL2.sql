@@ -156,24 +156,26 @@ CREATE TABLE IF NOT EXISTS accidentes (
    contributing_factor_vehicle_3 VARCHAR(100),
    contributing_factor_vehicle_4 VARCHAR(100),
    contributing_factor_vehicle_5 VARCHAR(100),
-   collision_id INTEGER PRIMARY KEY,
+   collision_id INTEGER,
    vehicle_type_code_1 VARCHAR(100),
    vehicle_type_code_2 VARCHAR(100),
    vehicle_type_code_3 VARCHAR(100),
    vehicle_type_code_4 VARCHAR(100),
-   vehicle_type_code_5 VARCHAR(100)
+   vehicle_type_code_5 VARCHAR(100),
+    CONSTRAINT Collision_pk PRIMARY KEY (collision_id)
+
 );
 
 
 CREATE TABLE IF NOT EXISTS colision_persona (
-   unique_id INT PRIMARY KEY,
-   collision_id INT FOREIGN KEY,
+   unique_id INT UNIQUE,
+   collision_id INT,
    crash_date DATE,
    crash_time TIME without time zone,
-   person_id UUID FOREIGN KEY,
+   person_id UUID,
    person_type VARCHAR(15),
    person_injury VARCHAR(15),
-   vehicle_id INT FOREIGN KEY,
+   vehicle_id INT UNIQUE,
    person_age INT,
    ejection VARCHAR(15),
    emotional_status VARCHAR(25),
@@ -186,7 +188,12 @@ CREATE TABLE IF NOT EXISTS colision_persona (
    ped_role VARCHAR(20),
    contributing_factor_1 VARCHAR(25),
    contributing_factor_2 VARCHAR(25),
-   person_sex CHAR(1)
+   person_sex CHAR(1),
+    CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES vehiculo (vehicle_id) MATCH FULL
+       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES persona (person_id) MATCH FULL
+       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)
 );
 
 
@@ -220,13 +227,13 @@ CREATE TABLE IF NOT EXISTS colision_vehiculo (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES accidentes (collision_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Unique_pk FOREIGN KEY (unique_id)
+    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)
 
 );
 
 
 CREATE TABLE IF NOT EXISTS persona (
-   person_id UUID PRIMARY KEY,
+   person_id UUID UNIQUE,
    person_sex CHAR(1),
    person_lastname VARCHAR(15),
    person_firstname VARCHAR(15),
