@@ -6,9 +6,8 @@ create schema temporal;
 
 create schema final;
 
-CREATE TABLE IF NOT EXISTS temporal.Vehiculos(
+CREATE TABLE IF NOT EXISTS temporal.vehiculos(
     vehicle_id  TEXT,
-    state_registration  TEXT,
     vehicle_type    TEXT,
     vehicle_make    TEXT,
     vehicle_model   TEXT,
@@ -244,3 +243,8 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
    CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id)
 );
 
+COPY temporal.vehiculos FROM 'C:\DATOS PL2\Vehicles.csv'
+DELIMITER ',' CSV HEADER NULL '';
+
+COPY temporal.vehiculos FROM 'C:\DATOS PL2\Vehicles.csv'
+DELIMITER ',' CSV HEADER NULL '';
