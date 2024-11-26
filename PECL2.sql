@@ -373,3 +373,7 @@ SELECT
 
 -- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales
 
+--     CONSULTAS A LA BASE DE DATOS
+
+-- 1.
+
