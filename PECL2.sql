@@ -310,11 +310,11 @@ SELECT
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
-    cast(temporal.vehiculos.vehicle_id , final.vehiculo.vehicle_id),
-    cast(temporal.vehiculos.vehicle_year , final.vehiculo.vehicle_year),
-    cast(temporal.vehiculos.vehicle_type , final.vehiculo.vehicle_type),
-    cast(temporal.vehiculos.vehicle_model , final.vehiculo.vehicle_model),
-    cast(temporal.vehiculos.vehicle_make , final.vehiculo.vehicle_make)
+    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
+    cast(vehicle_year AS INT),
+    cast(vehicle_type AS VARCHAR(50)),
+    cast(vehicle_model AS VARCHAR(25)),
+    cast(vehicle_make AS VARCHAR(25))
 
 FROM temporal.vehiculos;
 
