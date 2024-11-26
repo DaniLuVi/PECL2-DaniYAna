@@ -151,6 +151,33 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
 );
 
 
+CREATE TABLE IF NOT EXISTS final.persona (
+   person_id UUID,
+   person_sex CHAR(1),
+   person_lastname VARCHAR(15),
+   person_firstname VARCHAR(15),
+   person_phone VARCHAR(20),
+   person_address VARCHAR(50),
+   person_city VARCHAR(25),
+   person_state VARCHAR(20),
+   person_zip CHAR(5),
+   person_ssn CHAR(11),
+   person_dob DATE,
+   CONSTRAINT Persona_pk PRIMARY KEY (person_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS final.vehiculo (
+   vehicle_id UUID,
+   state_registration INT NULL,
+   vehicle_year INT,
+   vehicle_type VARCHAR(50),
+   vehicle_model VARCHAR(25),
+   vehicle_make VARCHAR(25),
+   CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id)
+);
+
+
 CREATE TABLE IF NOT EXISTS final.colision_persona (
    unique_id UUID,
    collision_id UUID,
@@ -215,32 +242,6 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
 
 );
 
-
-CREATE TABLE IF NOT EXISTS final.persona (
-   person_id UUID,
-   person_sex CHAR(1),
-   person_lastname VARCHAR(15),
-   person_firstname VARCHAR(15),
-   person_phone VARCHAR(20),
-   person_address VARCHAR(50),
-   person_city VARCHAR(25),
-   person_state VARCHAR(20),
-   person_zip CHAR(5),
-   person_ssn CHAR(11),
-   person_dob DATE,
-   CONSTRAINT Persona_pk PRIMARY KEY (person_id)
-);
-
-
-CREATE TABLE IF NOT EXISTS final.vehiculo (
-   vehicle_id UUID,
-   state_registration INT NULL,
-   vehicle_year INT,
-   vehicle_type VARCHAR(50),
-   vehicle_model VARCHAR(25),
-   vehicle_make VARCHAR(25),
-   CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id)
-);
 
 -- hasta aquí están creadas las tablas con los tipos de datos elegidos correctamente
 
@@ -309,11 +310,13 @@ SELECT
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
-    cast(temporal.vehiculos.vehicle_id, final.vehiculo.vehicle_id),
-    cast(temporal.vehiculos.vehicle_year, final.vehiculo.vehicle_year),
-    cast(temporal.vehiculos.vehicle_type, final.vehiculo.vehicle_type),
-    cast(temporal.vehiculos.vehicle_model, final.vehiculo.vehicle_model),
-    cast(temporal.vehiculos.vehicle_make, final.vehiculo.vehicle_make);
+    cast(temporal.vehiculos.vehicle_id , final.vehiculo.vehicle_id),
+    cast(temporal.vehiculos.vehicle_year , final.vehiculo.vehicle_year),
+    cast(temporal.vehiculos.vehicle_type , final.vehiculo.vehicle_type),
+    cast(temporal.vehiculos.vehicle_model , final.vehiculo.vehicle_model),
+    cast(temporal.vehiculos.vehicle_make , final.vehiculo.vehicle_make)
+
+FROM temporal.vehiculos;
 
 INSERT INTO final.colision_persona(unique_id, collision_id, crash_date, crash_time, person_id, person_type, person_injury, vehicle_id, person_age, ejection, emotional_status, bodily_injury, position_in_vehicle, safety_equipment, ped_location, ped_action, complaint, ped_role, contributing_factor_1, contributing_factor_2, person_sex)
 SELECT
