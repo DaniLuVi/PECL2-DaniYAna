@@ -1,7 +1,6 @@
 
 create database PECL2;
 
-
 create schema temporal;
 
 create schema final;
