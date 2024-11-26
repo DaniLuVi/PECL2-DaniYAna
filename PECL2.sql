@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES persona (person_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)
+    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)    -- seria unique_id o collision_id
 );
 
 
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES accidentes (collision_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)
+    CONSTRAINT Unique_pk PRIMARY KEY (unique_id)        -- seria unique_id o collision_id
 
 );
 
