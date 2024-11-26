@@ -5,7 +5,7 @@ create schema temporal;
 
 create schema final;
 
-CREATE TABLE IF NOT EXISTS Vehiculos(
+CREATE TABLE IF NOT EXISTS temporal.Vehiculos(
     vehicle_id  TEXT,
     state_registration  TEXT,
     vehicle_type    TEXT,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Vehiculos(
     vehicle_year    TEXT
 );
 
-CREATE TABLE IF NOT EXISTS accidentes (
+CREATE TABLE IF NOT EXISTS temporal.accidentes (
    crash_date TEXT,
    crash_time TEXT,
    borough TEXT,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS accidentes (
 );
 
 
-CREATE TABLE IF NOT EXISTS personas_accidente (
+CREATE TABLE IF NOT EXISTS temporal.personas_accidente (
    unique_id TEXT,
    collision_id TEXT,
    crash_date TEXT,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS personas_accidente (
 );
 
 
-CREATE TABLE IF NOT EXISTS vehiculos_accidente (
+CREATE TABLE IF NOT EXISTS temporal.vehiculos_accidente (
    unique_id TEXT,
    collision_id TEXT,
    crash_date TEXT,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS vehiculos_accidente (
 );
 
 
-CREATE TABLE IF NOT EXISTS personas (
+CREATE TABLE IF NOT EXISTS temporal.personas (
    person_id TEXT,
    person_sex TEXT,
    person_lastname TEXT,
@@ -115,24 +115,9 @@ CREATE TABLE IF NOT EXISTS personas (
    person_dob TEXT
 );
 
+-- hasta aquí  se tienen creadas todas las tablas iniciales (con todos los atributos de tipo TEXT) que van a estar dentro del esquema temporal, con los archivos importados con todos los datos para cada tabla
 
-CREATE TABLE IF NOT EXISTS personas(
-
-);
-
-CREATE TABLE IF NOT EXISTS colision_persona(
-
-);
-
-create table colision_vehiculo(
-
-);
-
-create table accidente(
-
-);
-
-CREATE TABLE IF NOT EXISTS accidentes (
+CREATE TABLE IF NOT EXISTS final.accidentes (
    crash_date DATE,
    crash_time TIME without time zone,
    borough VARCHAR(15),
@@ -167,7 +152,7 @@ CREATE TABLE IF NOT EXISTS accidentes (
 );
 
 
-CREATE TABLE IF NOT EXISTS colision_persona (
+CREATE TABLE IF NOT EXISTS final.colision_persona (
    unique_id INT UNIQUE,
    collision_id INT,
    crash_date DATE,
@@ -197,7 +182,7 @@ CREATE TABLE IF NOT EXISTS colision_persona (
 );
 
 
-CREATE TABLE IF NOT EXISTS colision_vehiculo (
+CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
    unique_id INT UNIQUE,
    collision_id INT UNIQUE,
    crash_date DATE,
@@ -232,7 +217,7 @@ CREATE TABLE IF NOT EXISTS colision_vehiculo (
 );
 
 
-CREATE TABLE IF NOT EXISTS persona (
+CREATE TABLE IF NOT EXISTS final.persona (
    person_id UUID UNIQUE,
    person_sex CHAR(1),
    person_lastname VARCHAR(15),
@@ -248,7 +233,7 @@ CREATE TABLE IF NOT EXISTS persona (
 );
 
 
-CREATE TABLE IF NOT EXISTS vehiculo (
+CREATE TABLE IF NOT EXISTS final.vehiculo (
    vehicle_id VARCHAR(50) UNIQUE,
    state_registration INT NULL,
    vehicle_year INT,
