@@ -323,5 +323,50 @@ SELECT
     cast(temporal.personas_accidente.crash_time, final.colision_persona.crash_time),
     cast(temporal.personas_accidente.person_id, final.colision_persona.person_id),
     cast(temporal.personas_accidente.person_type, final.colision_persona.person_type),
-    cast(temporal.personas_accidente.person_injury, final.colision_persona.person_injury), -- seguir
+    cast(temporal.personas_accidente.person_injury, final.colision_persona.person_injury),
+    cast(temporal.personas_accidente.vehicle_id, final.colision_persona.vehicle_id),
+    cast(temporal.personas_accidente.person_age, final.colision_persona.person_age),
+    cast(temporal.personas_accidente.ejection, final.colision_persona.ejection),
+    cast(temporal.personas_accidente.emotional_status, final.colision_persona.emotional_status),
+    cast(temporal.personas_accidente.bodily_injury, final.colision_persona.bodily_injury),
+    cast(temporal.personas_accidente.position_in_vehicle, final.colision_persona.position_in_vehicle),
+    cast(temporal.personas_accidente.safety_equipment, final.colision_persona.safety_equipment),
+    cast(temporal.personas_accidente.ped_location, final.colision_persona.ped_location),
+    cast(temporal.personas_accidente.ped_action, final.colision_persona.ped_action),
+    cast(temporal.personas_accidente.complaint, final.colision_persona.complaint),
+    cast(temporal.personas_accidente.ped_role, final.colision_persona.ped_role),
+    cast(temporal.personas_accidente.contributing_factor_1, final.colision_persona.contributing_factor_1),
+    cast(temporal.personas_accidente.contributing_factor_2, final.colision_persona.contributing_factor_2),
+    cast(temporal.personas_accidente.person_sex, final.colision_persona.person_sex);
+
+INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
+SELECT
+    cast(temporal.vehiculos_accidente.unique_id, final.colision_vehiculo.unique_id),
+    cast(temporal.vehiculos_accidente.collision_id, final.colision_vehiculo.collision_id),
+    cast(temporal.vehiculos_accidente.crash_date, final.colision_vehiculo.crash_date),
+    cast(temporal.vehiculos_accidente.crash_time, final.colision_vehiculo.crash_time),
+    cast(temporal.vehiculos_accidente.vehicle_id, final.colision_vehiculo.vehicle_id),
+    cast(temporal.vehiculos_accidente.state_registration, final.colision_vehiculo.state_registration),
+    cast(temporal.vehiculos_accidente.vehicle_type, final.colision_vehiculo.vehicle_type),
+    cast(temporal.vehiculos_accidente.vehicle_make, final.colision_vehiculo.vehicle_make),
+    cast(temporal.vehiculos_accidente.vehicle_model, final.colision_vehiculo.vehicle_model),
+    cast(temporal.vehiculos_accidente.vehicle_year, final.colision_vehiculo.vehicle_year),
+    cast(temporal.vehiculos_accidente.travel_direction, final.colision_vehiculo.travel_direction),
+    cast(temporal.vehiculos_accidente.vehicle_occupants, final.colision_vehiculo.vehicle_occupants),
+    cast(temporal.vehiculos_accidente.driver_sex, final.colision_vehiculo.driver_sex),
+    cast(temporal.vehiculos_accidente.driver_license_status, final.colision_vehiculo.driver_license_status),
+    cast(temporal.vehiculos_accidente.driver_license_jurisdiction, final.colision_vehiculo.driver_license_jurisdiction),
+    cast(temporal.vehiculos_accidente.pre_crash, final.colision_vehiculo.pre_crash),
+    cast(temporal.vehiculos_accidente.point_of_impact, final.colision_vehiculo.point_of_impact),
+    cast(temporal.vehiculos_accidente.vehicle_damage, final.colision_vehiculo.vehicle_damage),
+    cast(temporal.vehiculos_accidente.vehicle_damage_1, final.colision_vehiculo.vehicle_damage_1),
+    cast(temporal.vehiculos_accidente.vehicle_damage_2, final.colision_vehiculo.vehicle_damage_2),
+    cast(temporal.vehiculos_accidente.vehicle_damage_3, final.colision_vehiculo.vehicle_damage_3),
+    cast(temporal.vehiculos_accidente.public_property_damage, final.colision_vehiculo.public_property_damage),
+    cast(temporal.vehiculos_accidente.public_property_damage_type, final.colision_vehiculo.public_property_damage_type),
+    cast(temporal.vehiculos_accidente.contributing_factor_1, final.colision_vehiculo.contributing_factor_1),
+    cast(temporal.vehiculos_accidente.contributing_factor_2, final.colision_vehiculo.contributing_factor_2);
+
+
+-- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales
 
