@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
 
 
 CREATE TABLE IF NOT EXISTS final.colision_persona (
-   unique_id UUID,
+   unique_id INT UNIQUE,
    collision_id UUID,
    crash_date DATE,
    crash_time TIME without time zone,
@@ -204,12 +204,14 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Unique_pk1 PRIMARY KEY (unique_id)    -- seria unique_id o collision_id
+    CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    CONSTRAINT Unique_pk1 PRIMARY KEY (unique_id)
 );
 
 
 CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
-   unique_id UUID,
+   unique_id INT UNIQUE ,
    collision_id UUID,
    crash_date DATE,
    crash_time TIME without time zone,
@@ -238,7 +240,9 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Unique_pk2 PRIMARY KEY (unique_id)        -- seria unique_id o collision_id
+    CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    CONSTRAINT Unique_pk2 PRIMARY KEY (unique_id)
 
 );
 
@@ -324,27 +328,35 @@ FROM temporal.vehiculos;
 
 INSERT INTO final.colision_persona(unique_id, collision_id, crash_date, crash_time, person_id, person_type, person_injury, vehicle_id, person_age, ejection, emotional_status, bodily_injury, position_in_vehicle, safety_equipment, ped_location, ped_action, complaint, ped_role, contributing_factor_1, contributing_factor_2, person_sex)
 SELECT
-    cast(temporal.personas_accidente.unique_id, final.colision_persona.unique_id),
-    cast(temporal.personas_accidente.collision_id, final.colision_persona.collision_id),
-    cast(temporal.personas_accidente.crash_date, final.colision_persona.crash_date),
-    cast(temporal.personas_accidente.crash_time, final.colision_persona.crash_time),
-    cast(temporal.personas_accidente.person_id, final.colision_persona.person_id),
-    cast(temporal.personas_accidente.person_type, final.colision_persona.person_type),
-    cast(temporal.personas_accidente.person_injury, final.colision_persona.person_injury),
-    cast(temporal.personas_accidente.vehicle_id, final.colision_persona.vehicle_id),
-    cast(temporal.personas_accidente.person_age, final.colision_persona.person_age),
-    cast(temporal.personas_accidente.ejection, final.colision_persona.ejection),
-    cast(temporal.personas_accidente.emotional_status, final.colision_persona.emotional_status),
-    cast(temporal.personas_accidente.bodily_injury, final.colision_persona.bodily_injury),
-    cast(temporal.personas_accidente.position_in_vehicle, final.colision_persona.position_in_vehicle),
-    cast(temporal.personas_accidente.safety_equipment, final.colision_persona.safety_equipment),
-    cast(temporal.personas_accidente.ped_location, final.colision_persona.ped_location),
-    cast(temporal.personas_accidente.ped_action, final.colision_persona.ped_action),
-    cast(temporal.personas_accidente.complaint, final.colision_persona.complaint),
-    cast(temporal.personas_accidente.ped_role, final.colision_persona.ped_role),
-    cast(temporal.personas_accidente.contributing_factor_1, final.colision_persona.contributing_factor_1),
-    cast(temporal.personas_accidente.contributing_factor_2, final.colision_persona.contributing_factor_2),
-    cast(temporal.personas_accidente.person_sex, final.colision_persona.person_sex);
+    cast(temporal.personas_accidente.unique_id AS INT),
+    gen_random_uuid(),
+    TO_DATE(temporal.personas_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
+    cast(temporal.personas_accidente.crash_time AS TIME without time zone),
+    gen_random_uuid(),
+    cast(temporal.personas_accidente.person_type AS VARCHAR(15)),
+    cast(temporal.personas_accidente.person_injury AS VARCHAR(15)),
+    gen_random_uuid(),
+    cast(temporal.personas_accidente.person_age AS INT),
+    cast(temporal.personas_accidente.ejection AS VARCHAR(15)),
+    cast(temporal.personas_accidente.emotional_status AS VARCHAR(25)),
+    cast(temporal.personas_accidente.bodily_injury AS VARCHAR(25)),
+    cast(temporal.personas_accidente.position_in_vehicle AS VARCHAR(100)),
+    cast(temporal.personas_accidente.safety_equipment AS VARCHAR(25)),
+    cast(temporal.personas_accidente.ped_location AS VARCHAR(100)),
+    cast(temporal.personas_accidente.ped_action AS VARCHAR(25)),
+    cast(temporal.personas_accidente.complaint AS VARCHAR(40)),
+    cast(temporal.personas_accidente.ped_role AS VARCHAR(20)),
+    cast(temporal.personas_accidente.contributing_factor_1 AS VARCHAR(25)),
+    cast(temporal.personas_accidente.contributing_factor_2 AS VARCHAR(25)),
+    cast(temporal.personas_accidente.person_sex AS CHAR(1))
+
+FROM temporal.personas_accidente;
+
+-- ns como hacer el tema del paso de las claves extranjeras en el insert
+UPDATE final.colision_persona
+SET collision_id = temporal.accidentes.collision_id, person_id = temporal.personas.person_id, vehicle_id = temporal.vehiculos.vehicle_id
+FROM temporal.accidentes, temporal.personas, temporal.vehiculos
+WHERE collision_id IS NULL AND person_id IS NULL AND vehicle_id IS NULL;
 
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
