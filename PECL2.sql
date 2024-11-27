@@ -264,49 +264,53 @@ DELIMITER ',' CSV HEADER NULL '';
 
 INSERT INTO final.accidentes(crash_date, crash_time, borough, zip_code, latitude, longitude, location, on_street_name, cross_street_name, off_street_name, number_of_persons_injured, number_of_persons_killed, number_of_pedestrians_injured, number_of_pedestrians_killed, number_of_cyclist_injured, number_of_cyclist_killed, number_of_motorist_injured, number_of_motorist_killed, contributing_factor_vehicle_1, contributing_factor_vehicle_2, contributing_factor_vehicle_3, contributing_factor_vehicle_4, contributing_factor_vehicle_5, collision_id, vehicle_type_code_1, vehicle_type_code_2, vehicle_type_code_3, vehicle_type_code_4, vehicle_type_code_5)
 SELECT
-    cast(temporal.accidentes.crash_date, final.accidentes.crash_date),
-    cast(temporal.accidentes.crash_time, final.accidentes.crash_time),
-    cast(temporal.accidentes.borough, final.accidentes.borough),
-    cast(temporal.accidentes.zip_code, final.accidentes.zip_code),
-    cast(temporal.accidentes.latitude, final.accidentes.latitude),
-    cast(temporal.accidentes.longitude, final.accidentes.longitude),
-    cast(temporal.accidentes.location, final.accidentes.location),
-    cast(temporal.accidentes.on_street_name, final.accidentes.on_street_name),
-    cast(temporal.accidentes.cross_street_name, final.accidentes.cross_street_name),
-    cast(temporal.accidentes.off_street_name, final.accidentes.off_street_name),
-    cast(temporal.accidentes.number_of_persons_injured, final.accidentes.number_of_persons_injured),
-    cast(temporal.accidentes.number_of_persons_killed, final.accidentes.number_of_persons_killed),
-    cast(temporal.accidentes.number_of_pedestrians_injured, final.accidentes.number_of_pedestrians_injured),
-    cast(temporal.accidentes.number_of_pedestrians_killed, final.accidentes.number_of_pedestrians_killed),
-    cast(temporal.accidentes.number_of_cyclist_injured, final.accidentes.number_of_cyclist_injured),
-    cast(temporal.accidentes.number_of_cyclist_killed, final.accidentes.number_of_cyclist_killed),
-    cast(temporal.accidentes.number_of_motorist_injured, final.accidentes.number_of_motorist_injured),
-    cast(temporal.accidentes.number_of_motorist_killed, final.accidentes.number_of_motorist_killed),
-    cast(temporal.accidentes.contributing_factor_vehicle_1, final.accidentes.contributing_factor_vehicle_1),
-    cast(temporal.accidentes.contributing_factor_vehicle_2, final.accidentes.contributing_factor_vehicle_2),
-    cast(temporal.accidentes.contributing_factor_vehicle_3, final.accidentes.contributing_factor_vehicle_3),
-    cast(temporal.accidentes.contributing_factor_vehicle_4, final.accidentes.contributing_factor_vehicle_4),
-    cast(temporal.accidentes.contributing_factor_vehicle_5, final.accidentes.contributing_factor_vehicle_5),
-    cast(temporal.accidentes.collision_id, final.accidentes.collision_id),
-    cast(temporal.accidentes.vehicle_type_code_1, final.accidentes.vehicle_type_code_1),
-    cast(temporal.accidentes.vehicle_type_code_2, final.accidentes.vehicle_type_code_2),
-    cast(temporal.accidentes.vehicle_type_code_3, final.accidentes.vehicle_type_code_3),
-    cast(temporal.accidentes.vehicle_type_code_4, final.accidentes.vehicle_type_code_4),
-    cast(temporal.accidentes.vehicle_type_code_5, final.accidentes.vehicle_type_code_5);
+    TO_DATE(temporal.accidentes.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
+    cast(temporal.accidentes.crash_time AS TIME without time zone),
+    cast(temporal.accidentes.borough AS VARCHAR(15)),
+    cast(temporal.accidentes.zip_code AS VARCHAR(5)),
+    cast(temporal.accidentes.latitude AS DOUBLE PRECISION),
+    cast(temporal.accidentes.longitude AS DOUBLE PRECISION),
+    cast(temporal.accidentes.location AS POINT),
+    cast(temporal.accidentes.on_street_name AS VARCHAR(35)),
+    cast(temporal.accidentes.cross_street_name AS VARCHAR(25)),
+    cast(temporal.accidentes.off_street_name AS VARCHAR(35)),
+    cast(temporal.accidentes.number_of_persons_injured AS INTEGER),
+    cast(temporal.accidentes.number_of_persons_killed AS INTEGER),
+    cast(temporal.accidentes.number_of_pedestrians_injured AS INTEGER),
+    cast(temporal.accidentes.number_of_pedestrians_killed AS INTEGER),
+    cast(temporal.accidentes.number_of_cyclist_injured AS INTEGER),
+    cast(temporal.accidentes.number_of_cyclist_killed AS INTEGER),
+    cast(temporal.accidentes.number_of_motorist_injured AS INTEGER),
+    cast(temporal.accidentes.number_of_motorist_killed AS INTEGER),
+    cast(temporal.accidentes.contributing_factor_vehicle_1 AS VARCHAR(100)),
+    cast(temporal.accidentes.contributing_factor_vehicle_2 AS VARCHAR(100)),
+    cast(temporal.accidentes.contributing_factor_vehicle_3 AS VARCHAR(100)),
+    cast(temporal.accidentes.contributing_factor_vehicle_4 AS VARCHAR(100)),
+    cast(temporal.accidentes.contributing_factor_vehicle_5 AS VARCHAR(100)),
+    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
+    cast(temporal.accidentes.vehicle_type_code_1 AS VARCHAR(100)),
+    cast(temporal.accidentes.vehicle_type_code_2 AS VARCHAR(100)),
+    cast(temporal.accidentes.vehicle_type_code_3 AS VARCHAR(100)),
+    cast(temporal.accidentes.vehicle_type_code_4 AS VARCHAR(100)),
+    cast(temporal.accidentes.vehicle_type_code_5 AS VARCHAR(100))
+
+FROM temporal.accidentes;
 
 INSERT INTO final.persona(person_id, person_sex, person_lastname, person_firstname, person_phone, person_address, person_city, person_state, person_zip, person_ssn, person_dob)
 SELECT
-    cast(temporal.personas.person_id, final.persona.person_id),
-    cast(temporal.personas.person_sex, final.persona.person_sex),
-    cast(temporal.personas.person_lastname, final.persona.person_lastname),
-    cast(temporal.personas.person_firstname, final.persona.person_firstname),
-    cast(temporal.personas.person_phone, final.persona.person_phone),
-    cast(temporal.personas.person_address, final.persona.person_address),
-    cast(temporal.personas.person_city, final.persona.person_city),
-    cast(temporal.personas.person_state, final.persona.person_state),
-    cast(temporal.personas.person_zip, final.persona.person_zip),
-    cast(temporal.personas.person_ssn, final.persona.person_ssn),
-    cast(temporal.personas.person_dob, final.persona.person_dob);
+    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
+    cast(temporal.personas.person_sex AS CHAR(1)),
+    cast(temporal.personas.person_lastname AS VARCHAR(15)),
+    cast(temporal.personas.person_firstname AS VARCHAR(15)),
+    cast(temporal.personas.person_phone AS VARCHAR(20)),
+    cast(temporal.personas.person_address AS VARCHAR(50)),
+    cast(temporal.personas.person_city AS VARCHAR(25)),
+    cast(temporal.personas.person_state AS VARCHAR(20)),
+    cast(temporal.personas.person_zip AS CHAR(5)),
+    cast(temporal.personas.person_ssn AS CHAR(11)),
+    cast(temporal.personas.person_dob AS DATE)
+
+FROM temporal.personas;
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
