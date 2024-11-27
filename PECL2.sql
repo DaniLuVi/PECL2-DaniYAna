@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
    contributing_factor_vehicle_3 VARCHAR(100),
    contributing_factor_vehicle_4 VARCHAR(100),
    contributing_factor_vehicle_5 VARCHAR(100),
-   collision_id UUID,
+   collision_id INT UNIQUE,
    vehicle_type_code_1 VARCHAR(100),
    vehicle_type_code_2 VARCHAR(100),
    vehicle_type_code_3 VARCHAR(100),
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
 
 
 CREATE TABLE IF NOT EXISTS final.persona (
-   person_id UUID,
+   person_id VARCHAR(50) UNIQUE ,
    person_sex CHAR(1),
    person_lastname VARCHAR(15),
    person_firstname VARCHAR(15),
@@ -180,10 +180,10 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
 
 CREATE TABLE IF NOT EXISTS final.colision_persona (
    unique_id INT UNIQUE,
-   collision_id UUID,
+   collision_id INT UNIQUE,
    crash_date DATE,
    crash_time TIME without time zone,
-   person_id UUID,
+   person_id VARCHAR(50) UNIQUE ,
    person_type VARCHAR(15),
    person_injury VARCHAR(15),
    vehicle_id UUID,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
 
 CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
    unique_id INT UNIQUE ,
-   collision_id UUID,
+   collision_id INT UNIQUE,
    crash_date DATE,
    crash_time TIME without time zone,
    vehicle_id UUID,
@@ -240,8 +240,6 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
-        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Unique_pk2 PRIMARY KEY (unique_id)
 
 );
@@ -291,7 +289,7 @@ SELECT
     cast(temporal.accidentes.contributing_factor_vehicle_3 AS VARCHAR(100)),
     cast(temporal.accidentes.contributing_factor_vehicle_4 AS VARCHAR(100)),
     cast(temporal.accidentes.contributing_factor_vehicle_5 AS VARCHAR(100)),
-    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
+    CAST(temporal.accidentes.collision_id AS INT),
     cast(temporal.accidentes.vehicle_type_code_1 AS VARCHAR(100)),
     cast(temporal.accidentes.vehicle_type_code_2 AS VARCHAR(100)),
     cast(temporal.accidentes.vehicle_type_code_3 AS VARCHAR(100)),
@@ -302,7 +300,7 @@ FROM temporal.accidentes;
 
 INSERT INTO final.persona(person_id, person_sex, person_lastname, person_firstname, person_phone, person_address, person_city, person_state, person_zip, person_ssn, person_dob)
 SELECT
-    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
+    cast(temporal.personas.person_id AS VARCHAR(50)),
     cast(temporal.personas.person_sex AS CHAR(1)),
     cast(temporal.personas.person_lastname AS VARCHAR(15)),
     cast(temporal.personas.person_firstname AS VARCHAR(15)),
@@ -318,24 +316,25 @@ FROM temporal.personas;
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
-    gen_random_uuid(),    -- Genera un nuevo UUID para cada fila
-    cast(vehicle_year AS INT),
-    cast(vehicle_type AS VARCHAR(50)),
-    cast(vehicle_model AS VARCHAR(25)),
-    cast(vehicle_make AS VARCHAR(25))
+    gen_random_uuid(),          -- Genera un nuevo UUID para cada fila
+    cast(temporal.vehiculos.vehicle_year AS INT),
+    cast(temporal.vehiculos.vehicle_type AS VARCHAR(50)),
+    cast(temporal.vehiculos.vehicle_model AS VARCHAR(25)),
+    cast(temporal.vehiculos.vehicle_make AS VARCHAR(25))
+
 
 FROM temporal.vehiculos;
 
 INSERT INTO final.colision_persona(unique_id, collision_id, crash_date, crash_time, person_id, person_type, person_injury, vehicle_id, person_age, ejection, emotional_status, bodily_injury, position_in_vehicle, safety_equipment, ped_location, ped_action, complaint, ped_role, contributing_factor_1, contributing_factor_2, person_sex)
 SELECT
     cast(temporal.personas_accidente.unique_id AS INT),
-    gen_random_uuid(),
+    cast(temporal.personas_accidente.collision_id AS INT),
     TO_DATE(temporal.personas_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
     cast(temporal.personas_accidente.crash_time AS TIME without time zone),
-    gen_random_uuid(),
+    cast(temporal.personas_accidente.person_id AS VARCHAR(50)),
     cast(temporal.personas_accidente.person_type AS VARCHAR(15)),
     cast(temporal.personas_accidente.person_injury AS VARCHAR(15)),
-    gen_random_uuid(),
+    cast(final.vehiculo.vehicle_id AS UUID),
     cast(temporal.personas_accidente.person_age AS INT),
     cast(temporal.personas_accidente.ejection AS VARCHAR(15)),
     cast(temporal.personas_accidente.emotional_status AS VARCHAR(25)),
@@ -350,7 +349,10 @@ SELECT
     cast(temporal.personas_accidente.contributing_factor_2 AS VARCHAR(25)),
     cast(temporal.personas_accidente.person_sex AS CHAR(1))
 
-FROM temporal.personas_accidente;
+FROM temporal.personas_accidente, final.vehiculo;        -- final.persona,, final.accidentes, final.colision_persona
+--WHERE final.colision_persona.collision_id = final.accidentes.collision_id AND
+  --    final.colision_persona.vehicle_id = final.vehiculo.vehicle_id AND
+    --  final.colision_persona.person_id = final.persona.person_id;
 
 -- ns como hacer el tema del paso de las claves extranjeras en el insert (UNA IDEA)
 --UPDATE final.colision_persona
@@ -361,10 +363,10 @@ FROM temporal.personas_accidente;
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
     cast(temporal.vehiculos_accidente.unique_id AS INT),
-    gen_random_uuid(),
+    cast(temporal.vehiculos_accidente.collision_id AS INT),
     TO_DATE(temporal.vehiculos_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
     cast(temporal.vehiculos_accidente.crash_time AS TIME without time zone),
-    gen_random_uuid(),
+    cast(final.vehiculo.vehicle_id AS UUID),
     cast(temporal.vehiculos_accidente.state_registration AS VARCHAR(2)),
     cast(temporal.vehiculos_accidente.vehicle_type AS VARCHAR(50)),
     cast(temporal.vehiculos_accidente.vehicle_make AS VARCHAR(15)),
@@ -384,8 +386,9 @@ SELECT
     cast(temporal.vehiculos_accidente.public_property_damage AS CHAR(1)),
     cast(temporal.vehiculos_accidente.public_property_damage_type AS VARCHAR(50)),
     cast(temporal.vehiculos_accidente.contributing_factor_1 AS VARCHAR(100)),
-    cast(temporal.vehiculos_accidente.contributing_factor_2 AS VARCHAR(100));
+    cast(temporal.vehiculos_accidente.contributing_factor_2 AS VARCHAR(100))
 
+FROM temporal.vehiculos_accidente;
 
 -- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales  (ME DAN ERRORES LOS 2 ÚLTIMOS INSERTS)
 
