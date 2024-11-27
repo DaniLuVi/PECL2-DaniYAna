@@ -352,11 +352,11 @@ SELECT
 
 FROM temporal.personas_accidente;
 
--- ns como hacer el tema del paso de las claves extranjeras en el insert
-UPDATE final.colision_persona
-SET collision_id = temporal.accidentes.collision_id, person_id = temporal.personas.person_id, vehicle_id = temporal.vehiculos.vehicle_id
-FROM temporal.accidentes, temporal.personas, temporal.vehiculos
-WHERE collision_id IS NULL AND person_id IS NULL AND vehicle_id IS NULL;
+-- ns como hacer el tema del paso de las claves extranjeras en el insert (UNA IDEA)
+--UPDATE final.colision_persona
+--SET collision_id = temporal.accidentes.collision_id, person_id = temporal.personas.person_id, vehicle_id = temporal.vehiculos.vehicle_id
+--FROM temporal.accidentes, temporal.personas, temporal.vehiculos
+--WHERE collision_id IS NULL AND person_id IS NULL AND vehicle_id IS NULL;
 
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
