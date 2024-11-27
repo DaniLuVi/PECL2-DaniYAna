@@ -360,34 +360,34 @@ WHERE collision_id IS NULL AND person_id IS NULL AND vehicle_id IS NULL;
 
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
-    cast(temporal.vehiculos_accidente.unique_id, final.colision_vehiculo.unique_id),
-    cast(temporal.vehiculos_accidente.collision_id, final.colision_vehiculo.collision_id),
-    cast(temporal.vehiculos_accidente.crash_date, final.colision_vehiculo.crash_date),
-    cast(temporal.vehiculos_accidente.crash_time, final.colision_vehiculo.crash_time),
-    cast(temporal.vehiculos_accidente.vehicle_id, final.colision_vehiculo.vehicle_id),
-    cast(temporal.vehiculos_accidente.state_registration, final.colision_vehiculo.state_registration),
-    cast(temporal.vehiculos_accidente.vehicle_type, final.colision_vehiculo.vehicle_type),
-    cast(temporal.vehiculos_accidente.vehicle_make, final.colision_vehiculo.vehicle_make),
-    cast(temporal.vehiculos_accidente.vehicle_model, final.colision_vehiculo.vehicle_model),
-    cast(temporal.vehiculos_accidente.vehicle_year, final.colision_vehiculo.vehicle_year),
-    cast(temporal.vehiculos_accidente.travel_direction, final.colision_vehiculo.travel_direction),
-    cast(temporal.vehiculos_accidente.vehicle_occupants, final.colision_vehiculo.vehicle_occupants),
-    cast(temporal.vehiculos_accidente.driver_sex, final.colision_vehiculo.driver_sex),
-    cast(temporal.vehiculos_accidente.driver_license_status, final.colision_vehiculo.driver_license_status),
-    cast(temporal.vehiculos_accidente.driver_license_jurisdiction, final.colision_vehiculo.driver_license_jurisdiction),
-    cast(temporal.vehiculos_accidente.pre_crash, final.colision_vehiculo.pre_crash),
-    cast(temporal.vehiculos_accidente.point_of_impact, final.colision_vehiculo.point_of_impact),
-    cast(temporal.vehiculos_accidente.vehicle_damage, final.colision_vehiculo.vehicle_damage),
-    cast(temporal.vehiculos_accidente.vehicle_damage_1, final.colision_vehiculo.vehicle_damage_1),
-    cast(temporal.vehiculos_accidente.vehicle_damage_2, final.colision_vehiculo.vehicle_damage_2),
-    cast(temporal.vehiculos_accidente.vehicle_damage_3, final.colision_vehiculo.vehicle_damage_3),
-    cast(temporal.vehiculos_accidente.public_property_damage, final.colision_vehiculo.public_property_damage),
-    cast(temporal.vehiculos_accidente.public_property_damage_type, final.colision_vehiculo.public_property_damage_type),
-    cast(temporal.vehiculos_accidente.contributing_factor_1, final.colision_vehiculo.contributing_factor_1),
-    cast(temporal.vehiculos_accidente.contributing_factor_2, final.colision_vehiculo.contributing_factor_2);
+    cast(temporal.vehiculos_accidente.unique_id AS INT),
+    gen_random_uuid(),
+    TO_DATE(temporal.vehiculos_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
+    cast(temporal.vehiculos_accidente.crash_time AS TIME without time zone),
+    gen_random_uuid(),
+    cast(temporal.vehiculos_accidente.state_registration AS VARCHAR(2)),
+    cast(temporal.vehiculos_accidente.vehicle_type AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.vehicle_make AS VARCHAR(15)),
+    cast(temporal.vehiculos_accidente.vehicle_model AS VARCHAR(15)),
+    cast(temporal.vehiculos_accidente.vehicle_year AS INT),
+    cast(temporal.vehiculos_accidente.travel_direction AS VARCHAR(15)),
+    cast(temporal.vehiculos_accidente.vehicle_occupants AS INT),
+    cast(temporal.vehiculos_accidente.driver_sex AS CHAR(1)),
+    cast(temporal.vehiculos_accidente.driver_license_status AS VARCHAR(20)),
+    cast(temporal.vehiculos_accidente.driver_license_jurisdiction AS VARCHAR(2)),
+    cast(temporal.vehiculos_accidente.pre_crash AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.point_of_impact AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.vehicle_damage AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.vehicle_damage_1 AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.vehicle_damage_2 AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.vehicle_damage_3 AS VARCHAR(25)),
+    cast(temporal.vehiculos_accidente.public_property_damage AS CHAR(1)),
+    cast(temporal.vehiculos_accidente.public_property_damage_type AS VARCHAR(50)),
+    cast(temporal.vehiculos_accidente.contributing_factor_1 AS VARCHAR(100)),
+    cast(temporal.vehiculos_accidente.contributing_factor_2 AS VARCHAR(100));
 
 
--- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales
+-- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales  (ME DAN ERRORES LOS 2 ÚLTIMOS INSERTS)
 
 --     CONSULTAS A LA BASE DE DATOS
 
