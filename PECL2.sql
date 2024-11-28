@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
        ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
-    CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id, collision_id, vehicle_id)
+    CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id)
 
 );
 
@@ -328,13 +328,13 @@ FROM temporal.vehiculos;
 INSERT INTO final.colision_persona(unique_id, collision_id, crash_date, crash_time, person_id, person_type, person_injury, vehicle_id, person_age, ejection, emotional_status, bodily_injury, position_in_vehicle, safety_equipment, ped_location, ped_action, complaint, ped_role, contributing_factor_1, contributing_factor_2, person_sex)
 SELECT
     gen_random_uuid(),
-    cast(final.accidentes.collision_id AS UUID),
+    cast(temporal.personas_accidente.collision_id AS UUID),
     TO_DATE(temporal.personas_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
     cast(temporal.personas_accidente.crash_time AS TIME without time zone),
-    cast(final.persona.person_id AS UUID),
+    cast(temporal.personas_accidente.person_id AS UUID),
     cast(temporal.personas_accidente.person_type AS VARCHAR(15)),
     cast(temporal.personas_accidente.person_injury AS VARCHAR(15)),
-    cast(final.vehiculo.vehicle_id AS UUID),
+    cast(temporal.personas_accidente.vehicle_id AS UUID),
     cast(temporal.personas_accidente.person_age AS INT),
     cast(temporal.personas_accidente.ejection AS VARCHAR(15)),
     cast(temporal.personas_accidente.emotional_status AS VARCHAR(25)),
@@ -349,7 +349,10 @@ SELECT
     cast(temporal.personas_accidente.contributing_factor_2 AS VARCHAR(25)),
     cast(temporal.personas_accidente.person_sex AS CHAR(1))
 
-FROM temporal.personas_accidente, final.vehiculo, final.accidentes, final.persona
+FROM temporal.personas_accidente
+JOIN final.vehiculo v on cast(temporal.personas_accidente.vehicle_id AS UUID) = v.vehicle_id
+JOIN final.accidentes a on cast(temporal.personas_accidente.collision_id AS UUID) = a.collision_id
+JOIN final.persona p on cast(temporal.personas_accidente.person_id AS UUID) = p.person_id
 LIMIT 5000000;        -- , final.colision_persona
 --WHERE final.colision_persona.collision_id = final.accidentes.collision_id AND
   --    final.colision_persona.vehicle_id = final.vehiculo.vehicle_id AND
