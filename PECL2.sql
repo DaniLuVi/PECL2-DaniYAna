@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
    vehicle_type VARCHAR(50),
    vehicle_model VARCHAR(25),
    vehicle_make VARCHAR(25)
-   --CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id)        (no le vamos a poder poner a esta tabla PK porque hay ids repetidos y eso no puede ocurrir)
+   --CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id)        (no le vamos a poder poner a esta tabla PK porque hay ids repetidos por lo que no puede ser clave primaria, y los demás atributos tienen filas nulas)
 );
 
 
@@ -201,9 +201,9 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
    contributing_factor_2 VARCHAR(25),
    person_sex CHAR(1)
     --CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
-       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- debería de ser vehicle_id una clave extranjera, pero por errores en el fichero de datos esta clave extranjera no se puede implementar
     --CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
-       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- no vamos a poder designar esta clave extranjera a la clave compuesta (aunque así debería ser) porque el archivo de datos ccontiene en la columna person_id valores nulos
     --CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
         --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     --CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id, person_id)
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
    contributing_factor_1 VARCHAR(100),
    contributing_factor_2 VARCHAR(100)
     --CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
-       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                           -- debería de ser vehicle_id una clave extranjera, pero por errores en el fichero de datos esta clave extranjera no se puede implementar
     --CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
        --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     --CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id)
@@ -298,6 +298,8 @@ SELECT
 
 FROM temporal.accidentes;
 
+ALTER TABLE final.accidentes ADD CONSTRAINT Collision_pk PRIMARY KEY (collision_id);
+
 INSERT INTO final.persona(person_id, person_sex, person_lastname, person_firstname, person_phone, person_address, person_city, person_state, person_zip, person_ssn, person_dob)
 SELECT
     cast(temporal.personas.person_id AS VARCHAR(50)),
@@ -313,6 +315,8 @@ SELECT
     cast(temporal.personas.person_dob AS DATE)
 
 FROM temporal.personas;
+
+ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
@@ -350,19 +354,22 @@ SELECT
     cast(temporal.personas_accidente.person_sex AS CHAR(1))
 
 FROM temporal.personas_accidente;
---JOIN final.vehiculo v on cast(temporal.personas_accidente.vehicle_id AS UUID) = v.vehicle_id
---JOIN final.accidentes a on cast(temporal.personas_accidente.collision_id AS UUID) = a.collision_id
---JOIN final.persona p on cast(temporal.personas_accidente.person_id AS UUID) = p.person_id
---LIMIT 5000000;        -- , final.colision_persona
---WHERE final.colision_persona.collision_id = final.accidentes.collision_id AND
-  --    final.colision_persona.vehicle_id = final.vehiculo.vehicle_id AND
-    --  final.colision_persona.person_id = final.persona.person_id;
 
--- ns como hacer el tema del paso de las claves extranjeras en el insert (UNA IDEA)
---UPDATE final.colision_persona
---SET collision_id = temporal.accidentes.collision_id, person_id = temporal.personas.person_id, vehicle_id = temporal.vehiculos.vehicle_id
---FROM temporal.accidentes, temporal.personas, temporal.vehiculos
---WHERE collision_id IS NULL AND person_id IS NULL AND vehicle_id IS NULL;
+    --CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- debería de ser vehicle_id una clave extranjera, pero por errores en el fichero de datos esta clave extranjera no se puede implementar
+    --CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- no vamos a poder designar esta clave extranjera a la clave compuesta (aunque así debería ser) porque el archivo de datos ccontiene en la columna person_id valores nulos
+    --CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+        --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    --CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id, person_id)
+
+ALTER TABLE final.colision_persona ADD CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
+       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+
+ALTER TABLE final.colision_persona ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+
+ALTER TABLE final.colision_persona ADD CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id);     -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna person_id y vehicle_id)
 
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
@@ -393,7 +400,17 @@ SELECT
     cast(temporal.vehiculos_accidente.contributing_factor_2 AS VARCHAR(100))
 
 FROM temporal.vehiculos_accidente;
---LIMIT 5000000;
+
+--CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                           -- debería de ser vehicle_id una clave extranjera, pero por errores en el fichero de datos esta clave extranjera no se puede implementar
+    --CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
+    --CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id)
+
+ALTER TABLE final.colision_vehiculo ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+
+ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id, collision_id);       -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna vehicle_id)
 
 -- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales  (ME DAN ERRORES LOS 2 ÚLTIMOS INSERTS)
 
