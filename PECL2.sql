@@ -416,5 +416,31 @@ ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY K
 
 --     CONSULTAS A LA BASE DE DATOS
 
--- 1.
+-- 1. Mostrar los vehículos que han tenido más de un accidente.
 
+
+-- 2. Mostrar todos los vehículos con una antigüedad de al menos 35 años.
+
+
+-- 3. Mostrar el top 5 de las marcas de vehículos.
+
+
+-- 4. Mostrar los datos de aquellos conductores implicados en más de 1 accidente.
+
+
+-- 5. Mostrar los datos de los conductores de los conductores con accidentes mayores de 65 años y menores de 26 ordenados ascendentemente.
+
+
+-- 6. Mostrar los datos de los conductores que tienen como vehículo un “Pick-up”.
+
+
+-- 7. Mostrar las 3 marcas de vehículos que sufren menos accidentes. De igual manera mostrar los 3 tipos de vehículo que menos accidentes sufren.
+
+
+-- 8. Mostrar el numero de accidentes que ha sufrido cada marca.
+
+
+-- 9. Mostrar la procedencia de los conductores que han sufrido accidentes.
+
+
+-- 10.  Mostrar el numero de accidentes de los vehículos por estado de matriculación.
