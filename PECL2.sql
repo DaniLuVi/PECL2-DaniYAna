@@ -418,29 +418,87 @@ ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY K
 
 -- 1. Mostrar los vehículos que han tenido más de un accidente.
 
+SELECT vehicle_id
+FROM final.colision_vehiculo
+group by vehicle_id having count(*) > 1;
 
 -- 2. Mostrar todos los vehículos con una antigüedad de al menos 35 años.
 
+SELECT *
+FROM final.vehiculo
+WHERE (2024 - vehicle_year) >= 35;
 
 -- 3. Mostrar el top 5 de las marcas de vehículos.
+
+SELECT count(vehicle_model) as Cuenta, vehicle_model
+FROM final.vehiculo
+GROUP BY vehicle_model
+ORDER BY Cuenta DESC
+LIMIT 5;
 
 
 -- 4. Mostrar los datos de aquellos conductores implicados en más de 1 accidente.
 
+SELECT persona.*
+FROM final.persona, (SELECT person_id
+FROM final.colision_persona
+WHERE ped_role = 'Driver'
+GROUP BY person_id HAVING count(person_id) > 1) as C
+WHERE final.persona.person_id = C.person_id;     -- no aparece nada de info pq no hay una misma persona que se haya visto implicada en más de 1 accidente
 
 -- 5. Mostrar los datos de los conductores de los conductores con accidentes mayores de 65 años y menores de 26 ordenados ascendentemente.
 
+SELECT persona.*, colision_persona.person_age
+FROM final.persona, final.colision_persona, (SELECT distinct person_id
+FROM final.colision_persona
+WHERE ped_role = 'Driver'
+GROUP BY person_id) as C
+WHERE final.persona.person_id = C.person_id and final.colision_persona.person_age between 26 and 65
+ORDER BY final.colision_persona.person_age;
 
 -- 6. Mostrar los datos de los conductores que tienen como vehículo un “Pick-up”.
+
+SELECT persona.*
+FROM final.persona, vehiculo, (SELECT person_id, vehicle_id
+FROM final.colision_persona
+WHERE ped_role = 'Driver'
+GROUP BY person_id, vehicle_id) as C
+WHERE final.persona.person_id = C.person_id and C.vehicle_id = final.vehiculo.vehicle_id and final.vehiculo.vehicle_type like 'Pick-up%';       -- no aparece ninguna fila que cumpla la consulta
 
 
 -- 7. Mostrar las 3 marcas de vehículos que sufren menos accidentes. De igual manera mostrar los 3 tipos de vehículo que menos accidentes sufren.
 
+SELECT vehicle_model
+FROM (SELECT vehicle_model, count(*)
+FROM final.colision_vehiculo
+GROUP BY vehicle_model
+ORDER BY count(*)) AS C
+LIMIT 3;
+
+SELECT vehicle_type
+FROM (SELECT vehicle_type, count(*)
+FROM final.colision_vehiculo
+GROUP BY vehicle_type
+ORDER BY count(*)) AS C
+LIMIT 3;
 
 -- 8. Mostrar el numero de accidentes que ha sufrido cada marca.
 
+SELECT count(*), vehicle_model
+FROM final.colision_vehiculo
+GROUP BY vehicle_model;
 
 -- 9. Mostrar la procedencia de los conductores que han sufrido accidentes.
 
+SELECT persona.person_city, persona.person_state, persona.person_id
+FROM final.persona, (SELECT person_id
+FROM final.colision_persona
+WHERE ped_role = 'Driver'
+GROUP BY person_id) as C
+WHERE persona.person_id = C.person_id;
 
 -- 10.  Mostrar el numero de accidentes de los vehículos por estado de matriculación.
+
+SELECT count(*), state_registration
+FROM final.colision_vehiculo
+GROUP BY state_registration;
