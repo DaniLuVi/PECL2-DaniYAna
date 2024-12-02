@@ -358,7 +358,7 @@ FROM temporal.personas_accidente;
     --CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
        --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- debería de ser vehicle_id una clave extranjera, pero por errores en el fichero de datos esta clave extranjera no se puede implementar
     --CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
-       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- no vamos a poder designar esta clave extranjera a la clave compuesta (aunque así debería ser) porque el archivo de datos ccontiene en la columna person_id valores nulos
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,                                                               -- no vamos a poder designar esta clave extranjera a la clave compuesta (aunque así debería ser) porque el archivo de datos contiene en la columna person_id valores nulos
     --CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
         --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     --CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id, person_id)
@@ -420,7 +420,8 @@ ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY K
 
 SELECT vehicle_id
 FROM final.colision_vehiculo
-group by vehicle_id having count(*) > 1;
+group by vehicle_id
+having count(*) > 1;
 
 -- 2. Mostrar todos los vehículos con una antigüedad de al menos 35 años.
 
@@ -446,7 +447,7 @@ WHERE ped_role = 'Driver'
 GROUP BY person_id HAVING count(person_id) > 1) as C
 WHERE final.persona.person_id = C.person_id;     -- no aparece nada de info pq no hay una misma persona que se haya visto implicada en más de 1 accidente
 
--- 5. Mostrar los datos de los conductores de los conductores con accidentes mayores de 65 años y menores de 26 ordenados ascendentemente.
+-- 5. Mostrar los datos de los conductores con accidentes mayores de 65 años y menores de 26 ordenados ascendentemente.
 
 SELECT persona.*, colision_persona.person_age
 FROM final.persona, final.colision_persona, (SELECT distinct person_id
@@ -459,7 +460,7 @@ ORDER BY final.colision_persona.person_age;
 -- 6. Mostrar los datos de los conductores que tienen como vehículo un “Pick-up”.
 
 SELECT persona.*
-FROM final.persona, vehiculo, (SELECT person_id, vehicle_id
+FROM final.persona, final.vehiculo, (SELECT person_id, vehicle_id
 FROM final.colision_persona
 WHERE ped_role = 'Driver'
 GROUP BY person_id, vehicle_id) as C
