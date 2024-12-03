@@ -472,7 +472,7 @@ FROM (SELECT vehicle_model, count(*) AS num_accidentes
 FROM final.colision_vehiculo
 GROUP BY vehicle_model
 ORDER BY count(*)) AS C
-;
+LIMIT 3;
 
 SELECT vehicle_type, C.num_accidentes
 FROM (SELECT vehicle_type, count(*) AS num_accidentes
