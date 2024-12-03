@@ -420,8 +420,8 @@ ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY K
 
 SELECT vehicle_id
 FROM final.colision_vehiculo
-group by vehicle_id
-having count(*) > 1;
+GROUP BY vehicle_id
+HAVING count(*) > 1;
 
 -- 2. Mostrar todos los vehículos con una antigüedad de al menos 35 años.
 
@@ -444,7 +444,7 @@ SELECT persona.*
 FROM final.persona, (SELECT person_id
 FROM final.colision_persona
 WHERE ped_role = 'Driver'
-GROUP BY person_id HAVING count(person_id) > 1) as C
+GROUP BY person_id HAVING count(person_id) > 1) AS C
 WHERE final.persona.person_id = C.person_id;     -- no aparece nada de info pq no hay una misma persona que se haya visto implicada en más de 1 accidente
 
 -- 5. Mostrar los datos de los conductores con accidentes mayores de 65 años y menores de 26 ordenados ascendentemente.
@@ -452,8 +452,8 @@ WHERE final.persona.person_id = C.person_id;     -- no aparece nada de info pq n
 SELECT persona.*, colision_persona.person_age
 FROM final.persona, final.colision_persona, (SELECT distinct person_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver') as C
-WHERE final.persona.person_id = C.person_id and final.colision_persona.person_age between 26 and 65
+WHERE ped_role = 'Driver') AS C
+WHERE final.persona.person_id = C.person_id AND final.colision_persona.person_age between 26 AND 65
 ORDER BY final.colision_persona.person_age;
 
 -- 6. Mostrar los datos de los conductores que tienen como vehículo un “Pick-up”.
@@ -461,8 +461,8 @@ ORDER BY final.colision_persona.person_age;
 SELECT persona.*
 FROM final.persona, final.vehiculo, (SELECT distinct person_id, vehicle_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver') as C
-WHERE final.persona.person_id = C.person_id and C.vehicle_id = final.vehiculo.vehicle_id and final.vehiculo.vehicle_type like 'Pick-up%';       -- no aparece ninguna fila que cumpla la consulta
+WHERE ped_role = 'Driver') AS C
+WHERE final.persona.person_id = C.person_id AND C.vehicle_id = final.vehiculo.vehicle_id AND final.vehiculo.vehicle_type LIKE 'Pick-up%';       -- no aparece ninguna fila que cumpla la consulta
 
 
 -- 7. Mostrar las 3 marcas de vehículos que sufren menos accidentes. De igual manera mostrar los 3 tipos de vehículo que menos accidentes sufren.
@@ -492,7 +492,7 @@ GROUP BY vehicle_model;
 SELECT persona.person_city, persona.person_state, persona.person_id
 FROM final.persona, (SELECT distinct person_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver') as C
+WHERE ped_role = 'Driver') AS C
 WHERE persona.person_id = C.person_id;
 
 -- 10.  Mostrar el numero de accidentes de los vehículos por estado de matriculación.
