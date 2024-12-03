@@ -452,18 +452,16 @@ WHERE final.persona.person_id = C.person_id;     -- no aparece nada de info pq n
 SELECT persona.*, colision_persona.person_age
 FROM final.persona, final.colision_persona, (SELECT distinct person_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver'
-GROUP BY person_id) as C
+WHERE ped_role = 'Driver') as C
 WHERE final.persona.person_id = C.person_id and final.colision_persona.person_age between 26 and 65
 ORDER BY final.colision_persona.person_age;
 
 -- 6. Mostrar los datos de los conductores que tienen como vehículo un “Pick-up”.
 
 SELECT persona.*
-FROM final.persona, final.vehiculo, (SELECT person_id, vehicle_id
+FROM final.persona, final.vehiculo, (SELECT distinct person_id, vehicle_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver'
-GROUP BY person_id, vehicle_id) as C
+WHERE ped_role = 'Driver') as C
 WHERE final.persona.person_id = C.person_id and C.vehicle_id = final.vehiculo.vehicle_id and final.vehiculo.vehicle_type like 'Pick-up%';       -- no aparece ninguna fila que cumpla la consulta
 
 
@@ -492,10 +490,9 @@ GROUP BY vehicle_model;
 -- 9. Mostrar la procedencia de los conductores que han sufrido accidentes.
 
 SELECT persona.person_city, persona.person_state, persona.person_id
-FROM final.persona, (SELECT person_id
+FROM final.persona, (SELECT distinct person_id
 FROM final.colision_persona
-WHERE ped_role = 'Driver'
-GROUP BY person_id) as C
+WHERE ped_role = 'Driver') as C
 WHERE persona.person_id = C.person_id;
 
 -- 10.  Mostrar el numero de accidentes de los vehículos por estado de matriculación.
