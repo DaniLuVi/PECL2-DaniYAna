@@ -10,10 +10,17 @@ DELETE FROM pecl2.final.colision_vehiculo WHERE vehicle_id IS NULL OR vehicle_id
 ALTER TABLE pecl2.final.colision_persona DROP COLUMN vehicle_id;
 
 -- ejercicio 2
+DELETE FROM pecl2.final.persona
+where person_id is NULL or person_id like '' or length(person_id) < 10;
 
 
 -- ejercicio 3
+INSERT INTO pecl2.final.vehiculo
+(select colision_vehiculo.state_registration
+ from pecl2.final.colision_vehiculo, pecl2.final.vehiculo
+ where colision_vehiculo.vehicle_id = vehiculo.vehicle_id)
 
+DELETE FROM pecl2.final.colision_vehiculo.state_registration;
 
 -- ejercicio 4
 
