@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
    contributing_factor_vehicle_3 VARCHAR(100),
    contributing_factor_vehicle_4 VARCHAR(100),
    contributing_factor_vehicle_5 VARCHAR(100),
-   collision_id INTEGER UNIQUE NOT NULL,
+   collision_id INTEGER NOT NULL,
    vehicle_type_code_1 VARCHAR(100),
    vehicle_type_code_2 VARCHAR(100),
    vehicle_type_code_3 VARCHAR(100),
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
 
 
 CREATE TABLE IF NOT EXISTS final.persona (
-   person_id VARCHAR(50) UNIQUE NOT NULL,
+   person_id VARCHAR(50) NOT NULL,
    person_sex CHAR(1) check (person_sex='F' or person_sex='M' or person_sex='U' or person_sex is null),
    person_lastname VARCHAR(15),
    person_firstname VARCHAR(15),
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
 
 
 CREATE TABLE IF NOT EXISTS final.colision_persona (
-   unique_id INTEGER UNIQUE NOT NULL check (unique_id > 0),
+   unique_id INTEGER NOT NULL check (unique_id > 0),
    collision_id INTEGER NOT NULL check (collision_id > 0),
    crash_date DATE,
    crash_time TIME without time zone,
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
 
 
 CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
-   unique_id INTEGER UNIQUE NOT NULL check (unique_id > 0),
+   unique_id INTEGER NOT NULL check (unique_id > 0),
    collision_id INTEGER NOT NULL check (collision_id > 0),
    crash_date DATE,
    crash_time TIME without time zone,
