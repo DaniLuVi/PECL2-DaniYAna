@@ -3,16 +3,14 @@
 
 -- ejercicio 1
 
-DELETE FROM pecl2.final.vehiculo WHERE vehicle_id IS NULL OR vehicle_id LIKE '' OR length(vehicle_id) < 10;
+DELETE FROM pecl2.final.vehiculo WHERE pecl2.final.vehiculo.vehicle_id IS NULL OR pecl2.final.vehiculo.vehicle_id LIKE '' OR length(pecl2.final.vehiculo.vehicle_id) < 10;
 
-DELETE FROM pecl2.final.colision_vehiculo WHERE vehicle_id IS NULL OR vehicle_id LIKE '' OR length(vehicle_id) < 10;
+DELETE FROM pecl2.final.colision_vehiculo WHERE pecl2.final.colision_vehiculo.vehicle_id IS NULL OR pecl2.final.colision_vehiculo.vehicle_id LIKE '' OR length(pecl2.final.colision_vehiculo.vehicle_id) < 10;
 
 ALTER TABLE pecl2.final.colision_persona DROP COLUMN vehicle_id;
 
 -- ejercicio 2
-DELETE FROM pecl2.final.persona
-where person_id is NULL or person_id like '' or length(person_id) < 10;
-
+DELETE FROM final.persona WHERE persona.person_id IS NULL OR persona.person_id LIKE '' OR length(person_id) < 10;
 
 -- ejercicio 3
 INSERT INTO pecl2.final.vehiculo
@@ -58,12 +56,15 @@ WHERE person_sex is NULL or person_sex LIKE '';
 
 -- ejercicio 6
 ALTER TABLE pecl2.final.persona ADD COLUMN person_age;
+
 CREATE TRIGGER calcular_edad
     BEFORE INSERT ON persona
     FOR EACH ROW
     BEGIN
 
 -- ejercicio 7
+ALTER TABLE pecl2.final.vehiculo ADD COLUMN vehicle_accidents;
+
 
 
 -- ejercicio 8
