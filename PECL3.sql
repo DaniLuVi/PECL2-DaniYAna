@@ -1,6 +1,8 @@
 
 -- PECL3: CONSULTAS DE ARREGLO DE LLA BASE DE DATOS
 
+create database pecl3;
+
 -- ejercicio 1
 
 DELETE FROM pecl2.final.vehiculo WHERE pecl2.final.vehiculo.vehicle_id IS NULL OR pecl2.final.vehiculo.vehicle_id LIKE '' OR length(pecl2.final.vehiculo.vehicle_id) < 10;
