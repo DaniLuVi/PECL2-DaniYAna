@@ -10,7 +10,8 @@ DELETE FROM pecl2.final.colision_vehiculo WHERE pecl2.final.colision_vehiculo.ve
 ALTER TABLE pecl2.final.colision_persona DROP COLUMN vehicle_id;
 
 -- ejercicio 2
-DELETE FROM final.persona WHERE persona.person_id IS NULL OR persona.person_id LIKE '' OR length(person_id) < 10;
+DELETE FROM pecl2.final.persona
+where person_id is NULL or person_id like '' or length(person_id) < 10;
 
 -- ejercicio 3
 INSERT INTO pecl2.final.vehiculo
@@ -55,18 +56,46 @@ SET person_sex = 'U'
 WHERE person_sex is NULL or person_sex LIKE '';
 
 -- ejercicio 6
-ALTER TABLE pecl2.final.persona ADD COLUMN person_age;
+ALTER TABLE pecl2.final.persona ADD COLUMN person_age INT;
+CREATE OR REPLACE FUNCTION calcular_edad_persona()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.person_dob IS NOT NULL THEN
+        NEW.person_age := EXTRACT(YEAR FROM AGE(NEW.person_dob));
+    ELSE
+        NEW.person_age := NULL;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER calcular_edad
-    BEFORE INSERT ON persona
-    FOR EACH ROW
-    BEGIN
+CREATE TRIGGER calcular_edad_persona_final
+BEFORE INSERT ON pecl2.final.persona
+FOR EACH ROW
+EXECUTE FUNCTION calcular_edad_persona();
 
 -- ejercicio 7
-ALTER TABLE pecl2.final.vehiculo ADD COLUMN vehicle_accidents;
+ALTER TABLE pecl2.final.vehiculo ADD COLUMN vehicle_accidents INT;
+CREATE OR REPLACE FUNCTION actualizar_accidentes_vehiculo()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE pecl2.final.vehiculo
+    SET vehicle_accidents = (
+        SELECT COUNT(*)
+        FROM pecl2.final.colision_vehiculo
+        GROUP BY vehicle_id
+    )
+    WHERE vehicle_id = NEW.vehicle_id;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER calcular_accidentes_vehiculo
+AFTER INSERT ON pecl2.final.colision_vehiculo
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_accidentes_vehiculo();
+
 
 
 
 -- ejercicio 8
-
-
