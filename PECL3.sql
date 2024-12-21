@@ -38,7 +38,7 @@ WHERE vehicle_model IS NULL OR vehicle_model LIKE '';
 
 UPDATE pecl3.final.vehiculo
 SET vehicle_year = 9999
-WHERE vehicle_year IS NULL OR vehicle_year LIKE '' OR vehicle_year == 'null';
+WHERE vehicle_year IS NULL OR vehicle_year LIKE '' OR vehicle_year == 'null';   -- ARREGLAR
 
 UPDATE pecl3.final.vehiculo
 SET state_registration = 'unknown'
