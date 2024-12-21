@@ -1,6 +1,6 @@
 
 import psycopg2
-from Ejercicio9.py import conectar
+from Ejercicio9.py import conectar # type: ignore
 
 def mostrar_datos_adicionales(tabla1, tabla2):
 
