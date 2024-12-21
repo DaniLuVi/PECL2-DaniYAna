@@ -3,7 +3,7 @@
 
 create database pecl3;
 
--- ejercicio 1
+-- ejercicio 1      HECHO BIEN
 
 DELETE FROM pecl3.final.vehiculo WHERE pecl3.final.vehiculo.vehicle_id IS NULL OR pecl3.final.vehiculo.vehicle_id LIKE '' OR length(pecl3.final.vehiculo.vehicle_id) < 10;
 
@@ -11,19 +11,18 @@ DELETE FROM pecl3.final.colision_vehiculo WHERE pecl3.final.colision_vehiculo.ve
 
 ALTER TABLE pecl3.final.colision_persona DROP COLUMN vehicle_id;
 
--- ejercicio 2
-DELETE FROM pecl3.final.persona
-where person_id is NULL or person_id like '' or length(person_id) < 10;
+-- ejercicio 2      HECHO BIEN
+DELETE FROM pecl3.final.persona WHERE pecl3.final.persona.person_id IS NULL OR pecl3.final.persona.person_id LIKE '' OR length(pecl3.final.persona.person_id) < 10;
 
--- ejercicio 3
+-- ejercicio 3      NO LO HACE BIEN
 INSERT INTO pecl3.final.vehiculo
 (select colision_vehiculo.state_registration
  from pecl3.final.colision_vehiculo, pecl3.final.vehiculo
- where colision_vehiculo.vehicle_id = vehiculo.vehicle_id);
+ where pecl3.final.colision_vehiculo.vehicle_id = pecl3.final.vehiculo.vehicle_id);
 
 ALTER TABLE pecl3.final.colision_vehiculo DROP COLUMN state_registration;
 
--- ejercicio 4
+-- ejercicio 4      FUNCIONAN BIEN TODOS MENOS EL DE VEHICLE_YEAR
 
 UPDATE pecl3.final.vehiculo
 SET vehicle_type = 'unknown'

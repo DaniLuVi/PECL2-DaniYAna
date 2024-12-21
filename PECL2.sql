@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
    contributing_factor_vehicle_3 VARCHAR(100),
    contributing_factor_vehicle_4 VARCHAR(100),
    contributing_factor_vehicle_5 VARCHAR(100),
-   collision_id INTEGER NOT NULL,
+   collision_id INTEGER,
    vehicle_type_code_1 VARCHAR(100),
    vehicle_type_code_2 VARCHAR(100),
    vehicle_type_code_3 VARCHAR(100),
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS final.accidentes (
 
 
 CREATE TABLE IF NOT EXISTS final.persona (
-   person_id VARCHAR(50) NOT NULL,
+   person_id VARCHAR(50),
    person_sex CHAR(1) check (person_sex='F' or person_sex='M' or person_sex='U' or person_sex is null),
    person_lastname VARCHAR(15),
    person_firstname VARCHAR(15),
@@ -168,8 +168,8 @@ CREATE TABLE IF NOT EXISTS final.persona (
 
 
 CREATE TABLE IF NOT EXISTS final.vehiculo (
-   vehicle_id VARCHAR(50) NOT NULL,
-   state_registration INT NULL,
+   vehicle_id VARCHAR(50),
+   state_registration VARCHAR(7),
    vehicle_year INT,
    vehicle_type VARCHAR(50),
    vehicle_model VARCHAR(25),
@@ -179,8 +179,8 @@ CREATE TABLE IF NOT EXISTS final.vehiculo (
 
 
 CREATE TABLE IF NOT EXISTS final.colision_persona (
-   unique_id INTEGER NOT NULL check (unique_id > 0),
-   collision_id INTEGER NOT NULL check (collision_id > 0),
+   unique_id INTEGER check (unique_id > 0),
+   collision_id INTEGER check (collision_id > 0),
    crash_date DATE,
    crash_time TIME without time zone,
    person_id VARCHAR(50),
@@ -211,12 +211,12 @@ CREATE TABLE IF NOT EXISTS final.colision_persona (
 
 
 CREATE TABLE IF NOT EXISTS final.colision_vehiculo (
-   unique_id INTEGER NOT NULL check (unique_id > 0),
-   collision_id INTEGER NOT NULL check (collision_id > 0),
+   unique_id INTEGER check (unique_id > 0),
+   collision_id INTEGER check (collision_id > 0),
    crash_date DATE,
    crash_time TIME without time zone,
    vehicle_id VARCHAR(50),
-   state_registration VARCHAR(2),
+   state_registration VARCHAR(7),
    vehicle_type VARCHAR(50),
    vehicle_make VARCHAR(15),
    vehicle_model VARCHAR(15),
@@ -298,7 +298,7 @@ SELECT
 
 FROM temporal.accidentes;
 
-ALTER TABLE final.accidentes ADD CONSTRAINT Collision_pk PRIMARY KEY (collision_id);
+--ALTER TABLE final.accidentes ADD CONSTRAINT Collision_pk PRIMARY KEY (collision_id);
 
 INSERT INTO final.persona(person_id, person_sex, person_lastname, person_firstname, person_phone, person_address, person_city, person_state, person_zip, person_ssn, person_dob)
 SELECT
@@ -316,7 +316,7 @@ SELECT
 
 FROM temporal.personas;
 
-ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
+--ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
 
 INSERT INTO final.vehiculo(vehicle_id, vehicle_year, vehicle_type, vehicle_model, vehicle_make)
 SELECT
@@ -363,13 +363,13 @@ FROM temporal.personas_accidente;
         --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     --CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id, person_id)
 
-ALTER TABLE final.colision_persona ADD CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
-       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_persona ADD CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
 
-ALTER TABLE final.colision_persona ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
-       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_persona ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
 
-ALTER TABLE final.colision_persona ADD CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id);     -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna person_id y vehicle_id)
+--ALTER TABLE final.colision_persona ADD CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id);     -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna person_id y vehicle_id)
 
 INSERT INTO final.colision_vehiculo(unique_id, collision_id, crash_date, crash_time, vehicle_id, state_registration, vehicle_type, vehicle_make, vehicle_model, vehicle_year, travel_direction, vehicle_occupants, driver_sex, driver_license_status, driver_license_jurisdiction, pre_crash, point_of_impact, vehicle_damage, vehicle_damage_1, vehicle_damage_2, vehicle_damage_3, public_property_damage, public_property_damage_type, contributing_factor_1, contributing_factor_2)
 SELECT
@@ -378,7 +378,7 @@ SELECT
     TO_DATE(temporal.vehiculos_accidente.crash_date, 'MM/DD/YYYY'),  -- Convertir la fecha al formato adecuado
     cast(temporal.vehiculos_accidente.crash_time AS TIME without time zone),
     cast(temporal.vehiculos_accidente.vehicle_id AS VARCHAR(50)),
-    cast(temporal.vehiculos_accidente.state_registration AS VARCHAR(2)),
+    cast(temporal.vehiculos_accidente.state_registration AS VARCHAR(7)),
     cast(temporal.vehiculos_accidente.vehicle_type AS VARCHAR(50)),
     cast(temporal.vehiculos_accidente.vehicle_make AS VARCHAR(15)),
     cast(temporal.vehiculos_accidente.vehicle_model AS VARCHAR(15)),
@@ -407,10 +407,10 @@ FROM temporal.vehiculos_accidente;
        --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT,
     --CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id)
 
-ALTER TABLE final.colision_vehiculo ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
-       ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_vehiculo ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
 
-ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id, collision_id);       -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna vehicle_id)
+--ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id, collision_id);       -- explicado en anteriores comentarios del código el por qué de la clave primaria así (aunque debería de ser añadiendo la columna vehicle_id)
 
 -- hechos todos los inserts para obtener todas las ocurrencias en las tablas finales
 
