@@ -55,9 +55,6 @@ def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1,
 
         print("Estos son los datos adicionales obtenidos del accidente con " + atributo_introducir + " = "  + atributo_introducido + " :\n" + datos_tabla1[0] + " \n" + datos_tabla2[0])
 
-
-
-
     except(Exception, psycopg2.DatabaseError) as error:
         print(error)
 
