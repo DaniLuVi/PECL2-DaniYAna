@@ -9,7 +9,7 @@ def conectar():
     try:
         conn = psycopg2.connect(
             host = "localhost",
-            database = "pecl2",
+            database = "pecl3",
             user = "postgres",
             password = "Jaque35729,Q",
             port = "5432"
@@ -21,14 +21,14 @@ def conectar():
     return conn
 
 def consultar_tabla(tabla, nresult):
-    print("Consultando en la base de datos, la tabla " + tabla + "con " + nresult + "resultados.")
+    print("Consultando en la base de datos, la tabla " + tabla + " con " + str(nresult) + " resultados.")
 
     conn = conectar()
 
     try:
         cur = conn.cursor()
 
-        cur.execute("SELECT * FROM " + tabla + "LIMIT" + nresult + ";")
+        cur.execute("SELECT * FROM " + tabla + " LIMIT " + str(nresult) + ";")
 
         rows = cur.fetchall()
 
@@ -48,7 +48,7 @@ def consultar_tabla(tabla, nresult):
 
         for i in range(nresult):
             print(resultado[i])
-
+        print("\n\n")
         cur.close()
 
     except (Exception, psycopg2.DatabaseError) as error:
