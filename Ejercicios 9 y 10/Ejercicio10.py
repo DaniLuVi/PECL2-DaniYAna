@@ -1,6 +1,21 @@
-
 import psycopg2
-from Ejercicio9.py import conectar # type: ignore
+
+def conectar():
+    conn = None
+    print("Conectándose a la base de datos")
+    try:
+        conn = psycopg2.connect(
+            host = "localhost",
+            database = "pecl3",
+            user = "postgres",
+            password = "Jaque35729,Q",
+            port = "5432"
+        )
+
+    except (Exception, psycopg2.DatabaseError) as error: 
+        print(error)
+
+    return conn
 
 def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1, tabla2):
     print("Además, también se van a mostrar unos datos adicionales, de las tablas: " + tabla1 + " y " + tabla2 + ".\n")
@@ -12,7 +27,7 @@ def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1,
 
         cur2 = conn.cursor()
 
-        cur1.execute("SELECT * FROM " + tabla1 + " WHERE " + atributo_introducir + " = " + atributo_introducido)
+        cur1.execute("SELECT * FROM " + tabla1 + " WHERE " + atributo_introducir + " = " + str(atributo_introducido))
         
         datos_tabla1 = []
 
@@ -33,7 +48,7 @@ def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1,
             datos_tabla1.append(dato_adicional1)
 
 
-        cur2.execute("SELECT * FROM " + tabla2 + " WHERE " + atributo_introducir + " = " + atributo_introducido)
+        cur2.execute("SELECT * FROM " + tabla2 + " WHERE " + atributo_introducir + " = " + str(atributo_introducido))
 
         datos_tabla2 = []
 
@@ -53,7 +68,13 @@ def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1,
 
             datos_tabla2.append(dato_adicional2)
 
-        print("Estos son los datos adicionales obtenidos del accidente con " + atributo_introducir + " = "  + atributo_introducido + " :\n" + datos_tabla1[0] + " \n" + datos_tabla2[0])
+        print("Estos son los datos adicionales obtenidos del accidente con " + atributo_introducir + " = "  + str(atributo_introducido) + " :\n")
+
+        print(datos_tabla1[0]) 
+        
+        print(" \n") 
+        
+        print(datos_tabla2[0])
 
     except(Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -63,7 +84,7 @@ def mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla1,
             conn.close()
 
 def recuperar_datos_de_los_accidentes(tabla, atributo_introducir, tabla_adc1, tabla_adc2):
-    print("Consultando de la base de datos la tabla " + tabla + " para recuperar los datos a partir de un 'collision_id' que va a pedir el usuario por pantalla.\n")
+    print("Consultando de la base de datos la tabla " + tabla + " para recuperar los datos a partir de un '" + atributo_introducir + "' que va a pedir el usuario por pantalla.\n")
     atributo_introducido = int(input("Introduzca el valor del " + atributo_introducir +  " del que quiere ver sus datos: "))
 
     conn = conectar()
@@ -71,7 +92,7 @@ def recuperar_datos_de_los_accidentes(tabla, atributo_introducir, tabla_adc1, ta
     try:
         cur =  conn.cursor()
 
-        cur.execute("SELECT * FROM " + tabla + " WHERE " + atributo_introducir + " = " + atributo_introducido + " \n")
+        cur.execute("SELECT * FROM " + tabla + " WHERE " + atributo_introducir + " = " + str(atributo_introducido) + " \n")
 
         datos_recuperados = []
 
@@ -90,7 +111,11 @@ def recuperar_datos_de_los_accidentes(tabla, atributo_introducir, tabla_adc1, ta
         
             datos_recuperados.append(dato)
 
-        print("Estos son los datos recuperados del accidente con " + atributo_introducir + " = " + atributo_introducido + ":\n" + datos_recuperados[0] + " \n\n")
+        print("Estos son los datos recuperados del accidente con " + atributo_introducir + " = " + str(atributo_introducido) + ":\n")
+
+        print(datos_recuperados[0]) 
+        
+        print(" \n\n")
 
         mostrar_datos_adicionales(atributo_introducir, atributo_introducido, tabla_adc1, tabla_adc2)
 
@@ -104,3 +129,12 @@ def recuperar_datos_de_los_accidentes(tabla, atributo_introducir, tabla_adc1, ta
     finally:
         if conn is not None:
             conn.close()
+
+
+print("EJERCICIO 10\nMostrar los datos de un accidente concreto.\n")
+
+recuperar_datos_de_los_accidentes("final.accidentes", "collision_id", "final.colision_vehiculo", "final.colision_persona")
+
+print("Fin del programa\n")
+
+exit()
