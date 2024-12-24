@@ -72,12 +72,12 @@ ALTER TABLE pecl3.final.persona ADD COLUMN person_age INT;
 CREATE OR REPLACE FUNCTION calcular_edad_persona()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.person_dob IS NOT NULL THEN
-        NEW.person_age := EXTRACT(YEAR FROM AGE(NEW.person_dob));
+    IF OLD.person_dob IS NOT NULL THEN
+        NEW.person_age := EXTRACT(YEAR FROM AGE(OLD.person_dob));
     ELSE
         NEW.person_age := NULL;
     END IF;
-    RETURN NEW;
+    RETURN NEW.person_age;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -97,7 +97,7 @@ BEGIN
         FROM pecl3.final.colision_vehiculo
         GROUP BY vehicle_id
     )
-    WHERE vehicle_id = NEW.vehicle_id;
+    WHERE vehicle_id = OLD.vehicle_id;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
