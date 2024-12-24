@@ -27,7 +27,7 @@ ALTER TABLE pecl3.final.colision_vehiculo DROP COLUMN state_registration;
  --from pecl3.final.colision_vehiculo, pecl3.final.vehiculo
  --where pecl3.final.colision_vehiculo.vehicle_id = pecl3.final.vehiculo.vehicle_id);
 
--- ejercicio 4      FUNCIONAN BIEN TODOS MENOS EL DE VEHICLE_YEAR
+-- ejercicio 4      HECHO BIEN
 
 UPDATE pecl3.final.vehiculo
 SET vehicle_type = 'unknown'
@@ -43,7 +43,7 @@ WHERE vehicle_model IS NULL OR vehicle_model LIKE '';
 
 UPDATE pecl3.final.vehiculo
 SET vehicle_year = 9999
-WHERE vehicle_year IS NULL OR vehicle_year LIKE '' OR vehicle_year = 'null';   -- ARREGLAR
+WHERE vehicle_year IS NULL OR vehicle_year = 0;
 
 UPDATE pecl3.final.vehiculo
 SET state_registration = 'unknown'
