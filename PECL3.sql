@@ -67,7 +67,7 @@ WHERE person_sex is NULL or person_sex LIKE '';
  --from pecl3.final.colision_persona, pecl3.final.persona
  --where pecl3.final.colision_persona.person_id = pecl3.final.persona.person_id);
 
--- ejercicio 6
+-- ejercicio 6      HECHO BIEN
 ALTER TABLE pecl3.final.persona ADD COLUMN person_age INT;
 CREATE OR REPLACE FUNCTION calcular_edad_persona()
 RETURNS TRIGGER AS $$
@@ -91,23 +91,49 @@ ALTER TABLE pecl3.final.vehiculo ADD COLUMN vehicle_accidents INT;
 CREATE OR REPLACE FUNCTION actualizar_accidentes_vehiculo()
 RETURNS TRIGGER AS $$
 BEGIN
+    RAISE NOTICE 'Actualizando accidentes para vehicle_id: %', NEW.vehicle_id;
+
+    RAISE NOTICE 'Conteo de accidentes para vehicle_id %: %',
+        NEW.vehicle_id,
+        (SELECT COUNT(*) FROM pecl3.final.colision_vehiculo WHERE pecl3.final.colision_vehiculo.vehicle_id = NEW.vehicle_id);
+
+
     UPDATE pecl3.final.vehiculo
     SET vehicle_accidents = (
         SELECT COUNT(*)
         FROM pecl3.final.colision_vehiculo
-        GROUP BY vehicle_id
+        WHERE pecl3.final.colision_vehiculo.vehicle_id = NEW.vehicle_id
     )
-    WHERE vehicle_id = OLD.vehicle_id;
-    RETURN NULL;
+    WHERE pecl3.final.vehiculo.vehicle_id = NEW.vehicle_id;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER calcular_accidentes_vehiculo
-AFTER INSERT ON pecl3.final.vehiculo
+AFTER INSERT OR UPDATE ON pecl3.final.colision_vehiculo
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_accidentes_vehiculo();
 
 
-
-
 -- ejercicio 8
+
+--ALTER TABLE final.accidentes ADD CONSTRAINT Collision_pk PRIMARY KEY (collision_id);
+
+--ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
+
+--ALTER TABLE final.vehiculo ADD CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id);
+
+--ALTER TABLE final.colision_persona ADD CONSTRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_persona ADD CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_persona ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_persona ADD CONSTRAINT id_primary_persona PRIMARY KEY (unique_id, collision_id, person_id);
+
+--ALTER TABLE final.colision_vehiculo ADD CONSRAINT Vehiculo_pk FOREIGN KEY (vehicle_id) REFERENCES final.vehiculo (vehicle_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_vehiculo ADD CONSTRAINT Collision_pk FOREIGN KEY (collision_id) REFERENCES final.accidentes (collision_id) MATCH FULL
+       --ON DELETE SET DEFAULT ON UPDATE SET DEFAULT;
+--ALTER TABLE final.colision_vehiculo ADD CONSTRAINT id_primary_vehiculo PRIMARY KEY (unique_id, collision_id, vehicle_id);
+
