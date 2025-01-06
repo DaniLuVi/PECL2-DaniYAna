@@ -117,7 +117,7 @@ FOR EACH ROW
 EXECUTE FUNCTION actualizar_accidentes_vehiculo();
 
 
--- ejercicio 8      ME FALTA LA DE COLISION_PERSONA
+-- ejercicio 8      HECHO BIEN
 
 ALTER TABLE final.accidentes ADD CONSTRAINT Collision_pk PRIMARY KEY (collision_id);
 
@@ -126,7 +126,7 @@ ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
 ALTER TABLE final.vehiculo ADD CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id);
 
 -- tengo que realizar anteriormente una eliminación de los valores no permitidos de person_id en colision_persona
---DELETE FROM pecl3.final.colision_persona WHERE pecl3.final.colision_persona.person_id IS NULL OR pecl3.final.colision_persona.person_id LIKE '' OR length(pecl3.final.colision_persona.person_id) < 10;
+DELETE FROM pecl3.final.colision_persona WHERE pecl3.final.colision_persona.person_id IS NULL OR pecl3.final.colision_persona.person_id LIKE '' OR length(pecl3.final.colision_persona.person_id) < 10;
 
 
 ALTER TABLE final.colision_persona ADD CONSTRAINT Person_pk FOREIGN KEY (person_id) REFERENCES final.persona (person_id) MATCH FULL
