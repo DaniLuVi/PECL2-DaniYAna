@@ -69,6 +69,7 @@ WHERE person_sex is NULL or person_sex LIKE '';
 
 -- ejercicio 6      HECHO BIEN
 ALTER TABLE pecl3.final.persona ADD COLUMN person_age INT;
+
 CREATE OR REPLACE FUNCTION calcular_edad_persona()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -82,40 +83,39 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER calcular_edad_persona_final
-BEFORE UPDATE ON pecl3.final.persona
+BEFORE UPDATE OR INSERT ON pecl3.final.persona
 FOR EACH ROW
 EXECUTE FUNCTION calcular_edad_persona();
 
--- ejercicio 7
+UPDATE pecl3.final.persona
+SET person_id = person_id;
+
+-- ejercicio 7      HECHO BIEN
+CREATE INDEX index_vehicle_id ON final.colision_vehiculo(vehicle_id);
+
 ALTER TABLE pecl3.final.vehiculo ADD COLUMN IF NOT EXISTS vehicle_accidents INT DEFAULT 0;
 
 CREATE OR REPLACE FUNCTION actualizar_accidentes_vehiculo()
 RETURNS TRIGGER AS $$
 BEGIN
-    RAISE NOTICE 'Actualizando accidentes para vehicle_id: %', NEW.vehicle_id;
 
-    RAISE NOTICE 'Conteo de accidentes para vehicle_id %: %',
-        NEW.vehicle_id,
-        (SELECT COUNT(*) FROM pecl3.final.colision_vehiculo WHERE pecl3.final.colision_vehiculo.vehicle_id = NEW.vehicle_id);
-
-
-    UPDATE pecl3.final.vehiculo
-    SET vehicle_accidents = (
+    NEW.vehicle_accidents := COALESCE((
         SELECT COUNT(*)
         FROM pecl3.final.colision_vehiculo
-        WHERE pecl3.final.colision_vehiculo.vehicle_id = NEW.vehicle_id
-    )
-    WHERE pecl3.final.vehiculo.vehicle_id = NEW.vehicle_id;
+        WHERE final.colision_vehiculo.vehicle_id = NEW.vehicle_id
+    ), 0);
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER calcular_accidentes_vehiculo
-AFTER INSERT OR UPDATE ON pecl3.final.colision_vehiculo
+BEFORE UPDATE OR INSERT ON pecl3.final.vehiculo
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_accidentes_vehiculo();
 
+UPDATE pecl3.final.vehiculo
+SET vehicle_id = vehicle_id;
 
 -- ejercicio 8      HECHO BIEN
 
@@ -125,7 +125,7 @@ ALTER TABLE final.persona ADD CONSTRAINT Persona_pk PRIMARY KEY (person_id);
 
 ALTER TABLE final.vehiculo ADD CONSTRAINT Vehiculo_pk PRIMARY KEY (vehicle_id);
 
--- tengo que realizar anteriormente una eliminación de los valores no permitidos de person_id en colision_persona
+-- tengo que realizar anteriormente una eliminación de los valores no permitidos de person_id en colision_persona para que no haya valores erróneos como clave extranjera de la tabla
 DELETE FROM pecl3.final.colision_persona WHERE pecl3.final.colision_persona.person_id IS NULL OR pecl3.final.colision_persona.person_id LIKE '' OR length(pecl3.final.colision_persona.person_id) < 10;
 
 
