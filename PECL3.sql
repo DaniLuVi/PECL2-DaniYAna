@@ -22,11 +22,6 @@ WHERE pecl3.final.vehiculo.vehicle_id = pecl3.final.colision_vehiculo.vehicle_id
 
 ALTER TABLE pecl3.final.colision_vehiculo DROP COLUMN state_registration;
 
---INSERT INTO pecl3.final.vehiculo
---(select colision_vehiculo.state_registration
- --from pecl3.final.colision_vehiculo, pecl3.final.vehiculo
- --where pecl3.final.colision_vehiculo.vehicle_id = pecl3.final.vehiculo.vehicle_id);
-
 -- ejercicio 4      HECHO BIEN
 
 UPDATE pecl3.final.vehiculo
@@ -61,11 +56,6 @@ ALTER TABLE pecl3.final.colision_persona DROP COLUMN person_sex;
 UPDATE pecl3.final.persona
 SET person_sex = 'U'
 WHERE person_sex is NULL or person_sex LIKE '';
-
---INSERT INTO pecl3.final.persona
---(select pecl3.final.colision_persona.person_sex
- --from pecl3.final.colision_persona, pecl3.final.persona
- --where pecl3.final.colision_persona.person_id = pecl3.final.persona.person_id);
 
 -- ejercicio 6      HECHO BIEN
 ALTER TABLE pecl3.final.persona ADD COLUMN person_age INT;
